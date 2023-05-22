@@ -1,14 +1,19 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Reflector } from '@nestjs/core';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly reflector: Reflector,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -21,12 +26,18 @@ export class AuthGuard implements CanActivate {
 
     const token = authHeader.split(' ')[1];
 
-    try {
-      request.user = await this.jwtService.verifyAsync(token);
+    const decoded = await this.jwtService.verifyAsync(token);
+    request.user = decoded;
 
-      return true;
-    } catch (error) {
-      throw new UnauthorizedException('Invalid access token');
+    const requiredRoles = this.reflector.getAllAndOverride<string[]>('roles', [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (requiredRoles && !requiredRoles.includes(decoded.role)) {
+      throw new ForbiddenException('Insufficient permissions');
     }
+
+    return true;
   }
 }

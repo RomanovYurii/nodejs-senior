@@ -9,7 +9,7 @@ import {
   GetCustomersInput,
   UpdateCustomerInput,
 } from './dto/customer.input';
-import { ConflictException, UseGuards } from '@nestjs/common';
+import { ConflictException, SetMetadata, UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth-guard';
 
 @Resolver(() => Customer)
@@ -40,6 +40,7 @@ export class CustomerResolver {
   }
 
   @Mutation(() => Customer)
+  @SetMetadata('roles', ['ADMIN'])
   async updateCustomer(
     @Args('input') input: UpdateCustomerInput,
   ): Promise<Customer | null> {
@@ -47,6 +48,7 @@ export class CustomerResolver {
   }
 
   @Mutation(() => Customer)
+  @SetMetadata('roles', ['ADMIN'])
   async deleteCustomer(
     @Args('input') input: DeleteCustomerInput,
   ): Promise<Customer | null> {
