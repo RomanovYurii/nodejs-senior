@@ -1,10 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 
-import { customers } from './seeds/customers';
+import { getCustomers } from './seeds/customers';
 
 const prisma = new PrismaClient();
 
 async function main() {
+  const customers = await getCustomers();
   for (const customer of customers) {
     await prisma.customer.upsert({
       where: { id: customer.id },

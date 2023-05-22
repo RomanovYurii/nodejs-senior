@@ -9,18 +9,21 @@ import {
   GetCustomersInput,
   UpdateCustomerInput,
 } from './dto/customer.input';
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, UseGuards } from '@nestjs/common';
+import { AuthGuard } from 'src/auth/auth-guard';
 
 @Resolver(() => Customer)
 export class CustomerResolver {
   constructor(private readonly customerService: CustomerService) {}
 
   @Query(() => [Customer])
+  @UseGuards(AuthGuard)
   async customers(@Args('data') data?: GetCustomersInput): Promise<Customer[]> {
     return this.customerService.findAll(data);
   }
 
   @Query(() => [Customer])
+  @UseGuards(AuthGuard)
   async customer(@Args('data') { where }: GetCustomerInput): Promise<Customer> {
     return this.customerService.findOne({ where });
   }

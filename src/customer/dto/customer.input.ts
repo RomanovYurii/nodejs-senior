@@ -61,7 +61,10 @@ export class UpdateCustomerInput {
   id: string;
 
   @Field(() => String, { nullable: true })
-  role: string;
+  role?: string;
+
+  @Field(() => String, { nullable: true })
+  refreshToken?: string;
 }
 
 @InputType()
