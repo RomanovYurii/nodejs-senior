@@ -18,8 +18,6 @@ async function bootstrap() {
     .setTitle('Service Example')
     .setDescription('Service that can be used for boiler plating')
     .setVersion('1.0')
-    .addTag('example')
-    .addTag('default')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
