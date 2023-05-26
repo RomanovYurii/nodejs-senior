@@ -2,7 +2,7 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Customer {
+type BaseCustomer {
   id: ID!
 
   """Date and time when object was created."""
@@ -11,7 +11,6 @@ type Customer {
   """Date and time when the object was updated last time."""
   updatedAt: Timestamp!
   email: String!
-  password: String!
   role: String!
 }
 
@@ -21,8 +20,8 @@ type Customer {
 scalar Timestamp
 
 type Query {
-  customers(data: GetCustomersInput!): [Customer!]!
-  customer(data: GetCustomerInput!): [Customer!]!
+  customers(data: GetCustomersInput!): [BaseCustomer!]!
+  customer(data: GetCustomerInput!): BaseCustomer!
 }
 
 input GetCustomersInput {
@@ -44,12 +43,12 @@ input GetCustomerInput {
 }
 
 type Mutation {
-  createCustomer(input: CreateCustomerInput!): Customer!
-  updateCustomer(input: UpdateCustomerInput!): Customer!
-  deleteCustomer(input: DeleteCustomerInput!): Customer!
-  assignRole(input: AssignRoleInput!): Customer!
-  signUp(input: SignUpDto!): Boolean!
-  signIn(input: SignInDto!): Boolean!
+  createCustomer(input: CreateCustomerInput!): BaseCustomer!
+  updateCustomer(input: UpdateCustomerInput!): BaseCustomer!
+  deleteCustomer(input: DeleteCustomerInput!): BaseCustomer!
+  assignRole(input: AssignRoleInput!): BaseCustomer!
+  signUp(input: SignUpDto!): String!
+  signIn(input: SignInDto!): String!
 }
 
 input CreateCustomerInput {

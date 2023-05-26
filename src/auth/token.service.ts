@@ -7,7 +7,9 @@ export class TokenService {
   constructor(private readonly jwtService: JwtService) {}
 
   async generateAccessToken(payload: { email: string }): Promise<string> {
-    return this.jwtService.signAsync(payload);
+    return this.jwtService.signAsync(payload, {
+      secret: 'yr_991020',
+    });
   }
 
   async generateRefreshToken(): Promise<string> {
