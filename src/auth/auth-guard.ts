@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
+import { GqlExecutionContext } from '@nestjs/graphql';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -16,7 +17,8 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest();
+    const ctx = GqlExecutionContext.create(context);
+    const { req: request } = ctx.getContext();
 
     const authHeader = request.headers.authorization;
 
@@ -26,13 +28,15 @@ export class AuthGuard implements CanActivate {
 
     const token = authHeader.split(' ')[1];
 
-    const decoded = await this.jwtService.verifyAsync(token);
+    const decoded = await this.jwtService.verifyAsync(token, {
+      secret: 'yr_991020',
+    });
     request.user = decoded;
 
-    const requiredRoles = this.reflector.getAllAndOverride<string[]>('roles', [
+    const requiredRoles = this.reflector.get<string[]>(
+      'roles',
       context.getHandler(),
-      context.getClass(),
-    ]);
+    );
 
     if (requiredRoles && !requiredRoles.includes(decoded.role)) {
       throw new ForbiddenException('Insufficient permissions');
