@@ -8,7 +8,7 @@ export class TokenService {
 
   async generateAccessToken(payload: { email: string }): Promise<string> {
     return this.jwtService.signAsync(payload, {
-      secret: 'yr_991020',
+      secret: process.env.JWT_SECRET,
     });
   }
 
